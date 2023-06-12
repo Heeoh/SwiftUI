@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "libwebp-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awxkee/libwebp-ios.git",
+      "state" : {
+        "revision" : "fd795721f7aa4573b0e064511cdb52c6ea7a2ce1",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "webp.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awxkee/webp.swift.git",
+      "state" : {
+        "revision" : "a9da76e6fb094f06f09606a8a4f18b5195d68aee",
+        "version" : "1.0.4"
+      }
+    }
+  ],
+  "version" : 2
+}
