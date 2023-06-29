@@ -1,18 +1,17 @@
 //
-//  convert2webP_exApp.swift
-//  convert2webP_ex
+//  ApiStudyApp.swift
+//  ApiStudy
 //
-//  Created by Heeoh Son on 2023/06/07.
+//  Created by Heeoh Son on 2023/06/29.
 //
 
 import SwiftUI
 
 @main
-struct convert2webP_exApp: App {
+struct ApiStudyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
     }
 }
-

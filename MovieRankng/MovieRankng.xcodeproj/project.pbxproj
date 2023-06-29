@@ -16,6 +16,7 @@
 		3EE38A062A154F6800240777 /* MovieData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE38A052A154F6800240777 /* MovieData.swift */; };
 		3EE38A082A154F7900240777 /* MovieListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE38A072A154F7900240777 /* MovieListViewModel.swift */; };
 		3EE38A0B2A154FEA00240777 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 3EE38A0A2A154FEA00240777 /* Alamofire */; };
+		3EF549AA2A45B9AC006562F8 /* IconTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF549A92A45B9AC006562F8 /* IconTestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		3EE38A032A154F5F00240777 /* MovieCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCardView.swift; sourceTree = "<group>"; };
 		3EE38A052A154F6800240777 /* MovieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieData.swift; sourceTree = "<group>"; };
 		3EE38A072A154F7900240777 /* MovieListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListViewModel.swift; sourceTree = "<group>"; };
+		3EF549A92A45B9AC006562F8 /* IconTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				3EE389F12A154EC600240777 /* MovieRankngApp.swift */,
+				3EF549A92A45B9AC006562F8 /* IconTestView.swift */,
 				3EE389FF2A154F4100240777 /* MovieRankingView.swift */,
 				3EE38A012A154F4D00240777 /* LoginView.swift */,
 				3EE38A032A154F5F00240777 /* MovieCardView.swift */,
@@ -163,6 +166,7 @@
 				3EE38A062A154F6800240777 /* MovieData.swift in Sources */,
 				3EE38A042A154F5F00240777 /* MovieCardView.swift in Sources */,
 				3EE38A082A154F7900240777 /* MovieListViewModel.swift in Sources */,
+				3EF549AA2A45B9AC006562F8 /* IconTestView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

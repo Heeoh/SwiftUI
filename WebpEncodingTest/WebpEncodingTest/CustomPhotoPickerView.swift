@@ -12,7 +12,7 @@ import ImageIO
 
 struct CustomPhotoPickerView: UIViewControllerRepresentable {
     
-    @Binding var imageList: [ImageData]
+    @Binding var imageList: Set<UIImage>
     var totalByte = 0
     
     @Environment(\.presentationMode) var presentationMode
@@ -20,7 +20,7 @@ struct CustomPhotoPickerView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var config = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())
         config.filter = .images
-        config.selectionLimit = 100
+        config.selectionLimit = 1000
         let controller = PHPickerViewController(configuration: config)
         controller.delegate = context.coordinator
         return controller
@@ -64,7 +64,7 @@ struct CustomPhotoPickerView: UIViewControllerRepresentable {
                             print(error.localizedDescription)
                         } else if let image = selectedImage as? UIImage {
                             DispatchQueue.main.async {
-                                self.parent.imageList.append(ImageData(image))
+                                self.parent.imageList.insert(image)
                                 self.getByteSize(image: image)
                             }
                         }

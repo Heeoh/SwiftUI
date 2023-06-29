@@ -17,6 +17,7 @@
 		3E1EA1772A37D5360021BB29 /* WebpImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1EA1762A37D5360021BB29 /* WebpImageViewModel.swift */; };
 		3E1EA1792A37D5450021BB29 /* ImagesGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1EA1782A37D5450021BB29 /* ImagesGridView.swift */; };
 		3E1EA17B2A37D6740021BB29 /* CustomPhotoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1EA17A2A37D6740021BB29 /* CustomPhotoPickerView.swift */; };
+		3E800EC92A3E1AD8001EA4C4 /* sheetTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E800EC82A3E1AD8001EA4C4 /* sheetTestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		3E1EA1762A37D5360021BB29 /* WebpImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebpImageViewModel.swift; sourceTree = "<group>"; };
 		3E1EA1782A37D5450021BB29 /* ImagesGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesGridView.swift; sourceTree = "<group>"; };
 		3E1EA17A2A37D6740021BB29 /* CustomPhotoPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoPickerView.swift; sourceTree = "<group>"; };
+		3E800EC82A3E1AD8001EA4C4 /* sheetTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sheetTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				3E1EA17A2A37D6740021BB29 /* CustomPhotoPickerView.swift */,
 				3E1EA1722A37D5100021BB29 /* ImageData.swift */,
 				3E1EA1742A37D5260021BB29 /* WebpImagesView.swift */,
+				3E800EC82A3E1AD8001EA4C4 /* sheetTestView.swift */,
 				3E1EA1762A37D5360021BB29 /* WebpImageViewModel.swift */,
 				3E1EA1782A37D5450021BB29 /* ImagesGridView.swift */,
 				3E1EA1652A37D42D0021BB29 /* Assets.xcassets */,
@@ -162,6 +165,7 @@
 			files = (
 				3E1EA1642A37D42B0021BB29 /* ContentView.swift in Sources */,
 				3E1EA1622A37D42B0021BB29 /* WebpEncodingTestApp.swift in Sources */,
+				3E800EC92A3E1AD8001EA4C4 /* sheetTestView.swift in Sources */,
 				3E1EA1792A37D5450021BB29 /* ImagesGridView.swift in Sources */,
 				3E1EA1752A37D5260021BB29 /* WebpImagesView.swift in Sources */,
 				3E1EA17B2A37D6740021BB29 /* CustomPhotoPickerView.swift in Sources */,
@@ -303,6 +307,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +337,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

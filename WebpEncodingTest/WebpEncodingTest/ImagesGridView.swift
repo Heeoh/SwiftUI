@@ -10,20 +10,20 @@ import SwiftUI
 
 struct ImageGridView: View {
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
-    var imgList: [ImageData]
+    var imgList: [UIImage]
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 0) {
-                ForEach(imgList) { imageData in
-                    if let img = imageData.image {
-                        Image(uiImage: img)
+                ForEach(imgList, id: \.self) { imageData in
+//                    if let i÷mg = imageData {
+                        Image(uiImage: imageData)
                             .resizable()
                             .scaledToFit()
                             .cornerRadius(4)
-                    } else {
-                        ProgressView()
-                    }
+//                    } else {
+//                        ProgressView()
+//                    }
                 }
             }
         }

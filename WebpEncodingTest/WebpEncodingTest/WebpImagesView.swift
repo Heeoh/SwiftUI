@@ -10,10 +10,10 @@ import SwiftUI
 struct WebPImagesView: View {
     
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
-    var imgList: [ImageData]
+    var imgList: [UIImage]
     @ObservedObject var webPImageVM = webPImageViewModel()
 
-    init(imgList: [ImageData]) {
+    init(imgList: [UIImage]) {
         self.imgList = imgList
     }
     

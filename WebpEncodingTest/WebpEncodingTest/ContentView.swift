@@ -10,7 +10,7 @@ import PhotosUI
 
 struct ContentView: View {
     
-    @State var images: [ImageData] = []
+    @State var images: Set<UIImage> = []
     @State private var showSheet = false
     
     var body: some View {
@@ -20,9 +20,9 @@ struct ContentView: View {
                     showSheet.toggle()
                 }
                 if !images.isEmpty {
-                    ImageGridView(imgList: images)
+                    ImageGridView(imgList: Array(images))
 
-                    NavigationLink( destination: WebPImagesView(imgList: images),
+                    NavigationLink( destination: WebPImagesView(imgList: Array(images)),
                                     label: {
                         Text("convert to WebP")
                             .foregroundColor(.black)
@@ -32,7 +32,7 @@ struct ContentView: View {
                             .cornerRadius(15)
                     }).padding()
 
-                }
+                } 
             }.sheet(isPresented: $showSheet) {
                 CustomPhotoPickerView(imageList: $images)
             }

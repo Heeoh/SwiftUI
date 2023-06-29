@@ -11,109 +11,160 @@ import UIKit
 import SwiftUI
 import webp
 
-func getElasedTime(start: Date) -> TimeInterval {
+// test용!!!!-------------------------------------------------------//
+var totalByte: Int = 0
+var resizingTimeSum : TimeInterval = 0
+var encodingTimeSum : TimeInterval = 0
+
+func getElapsedTime(start: Date) -> TimeInterval {
     let end = Date()
     let elapsedTime = end.timeIntervalSince(start)
     return elapsedTime
 }
 
-class webPImageViewModel: ObservableObject {
-    var webPImageData: [WebPImgData] = []
+func testing(start : Date?, type : String) {
     
-    @Published var isLoading = true
-    var totalByte: Int = 0
+    guard let startTime = start else { return }
+    let elapsedTime = getElapsedTime(start: startTime)
+    
+    switch (type) {
+    case "resizing" :
+        print("image resized: \(elapsedTime) 초")
+        resizingTimeSum += elapsedTime
+    case "encoding" :
+        print("An image converted to WebP: \(elapsedTime) 초")
+        encodingTimeSum += elapsedTime
+    default :
+        return
+    }
+    
+}
+//----------------------------------------------------------------//
 
+class webPImageViewModel: ObservableObject {
     
-    func resizeImage(image: UIImage, idx: Int) -> UIImage? {
-        let startDate = Date()
-        
+    // MARK: PROPERTIES
+    
+    /// 변환한 webp 이미지들
+    var webPImageData: [Data] = []
+    
+    /// 변환 진행 상태
+    @Published var isLoading = true
+    
+
+    // MARK: FUNCS - RESIZING
+    
+    
+    /// Core Graphics를 이용해 image resizing
+    func resizeImageAsync(image: UIImage) async -> UIImage? {
         let maxSize: CGFloat = 1024
-        let width = image.size.width
-        let height = image.size.height
-        
-        let scaleFactor = min(maxSize / width, maxSize / height)
-        
+
+        // 이미지의 짧은 부분이 1024가 되도록 리사이징
+        let scaleFactor = max(maxSize / image.size.width, maxSize / image.size.height)
+
         // 이미지 크기가 1024 이하인 경우 축소하지 않고 반환
         if scaleFactor >= 1.0 {
             return image
         }
-        
-        let scaledSize = CGSize(width: width * scaleFactor, height: height * scaleFactor)
-        
-        let renderer = UIGraphicsImageRenderer(size: scaledSize)
-        let scaledImage = renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: scaledSize))
-        }
-        
-        print("w: \(scaledImage.size.width), h: \(scaledImage.size.height)")
-        print("image \(idx) resized: \(getElasedTime(start: startDate)) 초")
-        
-        return scaledImage
-    }
-    
-    
-    // MARK: ASYNCHRO CONVERT TO WEBP
-    
-    func convertImageToWebPAsync(uiImage: UIImage?) async -> Data? {
-        guard let image = uiImage else {
-            return nil
-        }
-        
+
         return await withCheckedContinuation { continuation in
             DispatchQueue.global().async {
-                //                let startDate = Date()
-                if let webPData: Data = try? WebPEncoder().encode(image, config: .preset(.picture, quality: 81)) {
-//                    print("An image converted to WebP: \(getElasedTime(start: startDate)) 초")
+                let scaledWidth = image.size.width * scaleFactor
+                let scaledHeight = image.size.height * scaleFactor
+                let colorSpace = CGColorSpaceCreateDeviceRGB()
+                let bitmapInfo = CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue
+                
+                guard let context = CGContext(data: nil,
+                                              width: Int(scaledWidth), height: Int(scaledHeight),
+                                              bitsPerComponent: 8, bytesPerRow: 0,
+                                              space: colorSpace, bitmapInfo: bitmapInfo)
+                else { return continuation.resume(returning: nil) }
+
+                context.interpolationQuality = .high
+                context.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: scaledWidth, height: scaledHeight))
+
+                guard let scaledImage = context.makeImage() else {
+                    return continuation.resume(returning: nil)
+                }
+
+                let resizedImage = UIImage(cgImage: scaledImage)
+                
+//                testing(start: startDate, type: "resizing")
+                continuation.resume(returning: resizedImage)
+            }
+        }
+    }
+
+   
+    // MARK: FUNC - ASYNC ENCODING
+    
+    /// 하나의 uiImage를 webp로 변환
+    /// uiImage가 없거나 변환에 실패했을 경우 nil 리턴
+    func convertImageToWebPAsync(image: UIImage) async -> Data? {
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                if let webPData: Data = try? WebPEncoder().encode(image, config: .preset(.picture, quality: 90)) {
                     continuation.resume(returning: webPData)
                 } else {
                     continuation.resume(returning: nil)
                 }
             }
-
         }
     }
     
-    func convertImgListAsync(imgList: [ImageData]) async {
-//        self.isLoading = true
-        let startDate = Date()
-        
-        for _ in 0..<imgList.count {
-            self.webPImageData.append(WebPImgData(nil))
+    /// 여러 개의 uiImage를 알맞은 사이즈로 리사이징 후 webp로 변환
+    /// 각 이미지에 대해 비동기 병렬로 작업 수행
+    func convertImgListAsync(imgList: [UIImage]) async {
+        // 이미 모든 이미지가 변환되어 있는 경우
+        if !webPImageData.isEmpty && webPImageData.count == imgList.count {
+            print("All images already converted")
+            return
         }
         
-        await withTaskGroup(of: (Int, Data?).self) { group in
+        DispatchQueue.main.async {
+            self.isLoading = true
+        }
+        
+        // test !!!
+        let startDate = Date()
+        
+        // 현재 webpImageData는 항상 []로 초기화되어 있음
+        // 변환시킬 이미지 개수만큼 webPImageData 배열 초기화
+//        webPImageData = Array(repeating: WebPImgData(nil), count: imgList.count)
+        
+        // webP로 변환
+        await withTaskGroup(of: Void.self) { group in
             // Add each image conversion task to the group
-            for (i, imageData) in imgList.enumerated() {
+            for uiImage in imgList {
                 group.addTask {
-                    if let resizedImage = self.resizeImage(image: imageData.image!, idx: i),
-                       let webPData = await self.convertImageToWebPAsync(uiImage: resizedImage) {
-//                        print(i)
-                        return (i, webPData)
-                    } else {
-                        return (i, nil)
+//                    if let uiImage = imageData,
+                    if let resizedImage = uiImage.resizeAsync(maxSize: 1024),
+//                       let resizedImage = await self.resizeImageAsync(image: uiImage),
+                       let webPData = await self.convertImageToWebPAsync(image: resizedImage) {
+                        Task {
+//                            self.webPImageData[i].webPImg = webPData
+                            self.webPImageData.append(webPData)
+                            // test !!!
+                            totalByte += webPData.count
+                            let byteArray = [UInt8](webPData)
+                            //await self.uploadImageToServer(webPData: webPData) // 이미지를 변환한 후 바로 서버로 업로드
+                        }
                     }
                 }
             }
-            
-            // Process each result as it completes
-            for await (i, maybeData) in group {
-                if let webPData = maybeData {
-//                    self.webPImageData.append(WebPImgData(webPData))
-                    self.webPImageData[i].webPImg = webPData
-                    totalByte += webPData.count
-                }
-            }
+        
+            await group.waitForAll()
         }
         
         DispatchQueue.main.async {
             self.isLoading = false
         }
         
-        print("All images converted to WebP: \(getElasedTime(start: startDate)) 초)")
-        print("WebP Image Size: \(totalByte) bytes")
+        print("\(webPImageData.count) images converted to WebP:  \(totalByte) bytes")
+        print("Time: \(getElapsedTime(start: startDate)) 초")
     }
     
-    
+    // MARK: WEBP TO SERVER
 
     /*/ not yet
     func uploadImageToServer() {
@@ -127,24 +178,41 @@ class webPImageViewModel: ObservableObject {
     }
     */
 }
+
+extension UIImage {
+func resizeAsync(maxSize: CGFloat) -> UIImage? {
+    let scaleFactor = max(maxSize / self.size.width, maxSize / self.size.height)
     
-
-
-
-/*
- 
- func convertImageToWebP(image: UIImage) -> Data? {
-     return image.sd_imageData(as: .webP, compressionQuality: 0.9)
- }
-
- func convertImageToByteArray(image: UIImage) -> [UInt8]? {
-     guard let imageData = convertImageToWebP(image: image) else {
-         return nil
-     }
-     
-     let byteArray = [UInt8](imageData)
-     return byteArray
- }
- */
-
-
+    if scaleFactor >= 1.0 {
+        return self
+    }
+    
+//        return await withCheckedContinuation { continuation in
+//            DispatchQueue.global().async {
+    let scaledWidth = self.size.width * scaleFactor
+    let scaledHeight = self.size.height * scaleFactor
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let bitmapInfo = CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue
+    
+    guard let context = CGContext(data: nil,
+                                  width: Int(scaledWidth), height: Int(scaledHeight),
+                                  bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: colorSpace, bitmapInfo: bitmapInfo)
+    else { return nil }
+//        else { return continuation.resume(returning: nil) }
+    
+    context.interpolationQuality = .high
+    context.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: scaledWidth, height: scaledHeight))
+    
+    guard let scaledImage = context.makeImage() else {
+        return nil
+//            return continuation.resume(returning: nil)
+    }
+    
+    let resizedImage = UIImage(cgImage: scaledImage)
+    return resizedImage
+//        return continuation.resume(returning: resizedImage)
+//            }
+//        }
+}
+}
