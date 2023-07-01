@@ -20,6 +20,7 @@ class AuthVM: ObservableObject {
         
         AuthApiService.kakaoRegister(username: username, email: email, phoneNumber: phoneNumber, nickname: nickname, gender: gender, birthday: birthday)
             .sink { completion in
+                debugPrint(completion)
                 switch completion {
                 case .finished:
                     print("API 통신이 완료되었습니다.")
