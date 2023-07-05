@@ -15,22 +15,41 @@ class AuthVM: ObservableObject {
     @Published var loggedInUser: UserInfo? = nil
     
     /// 회원가입
-    func kakaoRegister(username: String, email: String?, phoneNumber: String?, nickname: String, gender: String, birthday: [Int]) {
+    func kakaoRegister(username: String,
+                       email: String?,
+                       phoneNumber: String?,
+                       nickname: String,
+                       gender: String,
+                       birthday: [Int],
+                       completion: @escaping (Bool, String?) -> Void)  {
         print("AuthVM - kakaoRegister() called")
+        var isSuccess = false
+        var errorMessage: String? = nil
         
         AuthApiService.kakaoRegister(username: username, email: email, phoneNumber: phoneNumber, nickname: nickname, gender: gender, birthday: birthday)
-            .sink { completion in
-                debugPrint(completion)
-                switch completion {
+            .sink { apiCompletion in
+                switch apiCompletion {
                 case .finished:
-                    print("API 통신이 완료되었습니다.")
+                    print("완료")
+                    isSuccess = true
+                    errorMessage = nil
                 case .failure(let error):
-                    print("API 통신 중 에러가 발생했습니다: \(error)")
+                    isSuccess = false
+                    switch error {
+                    case .BAD_REQUEST(let errorData):
+                        print("400 BAD_REQUEST Error: \(errorData.message)")
+                        errorMessage = errorData.message
+                    case .CONFLICT(let errorData):
+                        print("409 CONFLICT Error: \(errorData.message)")
+                        errorMessage = errorData.message
+                    default:
+                        debugPrint("Error: \(error)")
+                        errorMessage = error.localizedDescription
+                    }
                 }
+                completion(isSuccess, errorMessage)
             } receiveValue: { response in
-                print(response)
+                debugPrint(response)
             }.store(in: &subscription)
-        
-        
     }
 }

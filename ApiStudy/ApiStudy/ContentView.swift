@@ -59,7 +59,16 @@ struct ContentView: View {
             
             // sign up buttom
             Button(action: {
-                authVM.kakaoRegister(username: userInfo.username, email: userInfo.email, phoneNumber: userInfo.phoneNumber, nickname: userInfo.nickname, gender: "M", birthday: [1999, 10, 10])
+                authVM.kakaoRegister(username: userInfo.username, email: userInfo.email, phoneNumber: userInfo.phoneNumber, nickname: userInfo.nickname, gender: "M", birthday: [1999, 10, 10]) { isSuccess, errorMessage in
+                    print("SignUp Button")
+                    if isSuccess == true {
+                        print("success")
+                    } else if let message = errorMessage {
+                        print(message)
+                    } else {
+                        print("unknown error")
+                    }
+                }
             }) {
                 Text("sign up")
             }
